@@ -47,6 +47,9 @@ var questions = [{
 ]
 var i = 60
 var currentQestion = "0"
+var answerButtons = document.getElementsByClassName("answer-button")
+var questionBox = document.getElementById("question")
+var startButton = document.getElementById("start-button")
 
 //create timer using setInterval()
 
@@ -62,18 +65,50 @@ const quizTimer = function(){
 const startQuiz = function (){
 	setInterval(quizTimer, 1000)
 
+	startButton.setAttribute("hidden", "")
+	answerButtons[0].removeAttribute("hidden")
+	answerButtons[1].removeAttribute("hidden")
+	answerButtons[2].removeAttribute("hidden")
+	answerButtons[3].removeAttribute("hidden")
+
+	nextQuestion()
 }
 
 const nextQuestion = function (){
+
+	if(currentQestion < questions.length){
+	questionBox.innerText = questions[currentQestion].content
+	answerButtons[0].setAttribute("value", questions[currentQestion].answer1)
+	answerButtons[1].setAttribute("value", questions[currentQestion].answer2)
+	answerButtons[2].setAttribute("value", questions[currentQestion].answer3)
+	answerButtons[3].setAttribute("value", questions[currentQestion].answer4)
+	}
+	else{
+		endQuiz()
+	}
+}
+
+const endQuiz = function() {
 	
+	answerButtons[0].setAttribute("hidden","")
+	answerButtons[1].setAttribute("hidden","")
+	answerButtons[2].setAttribute("hidden","")
+	answerButtons[3].setAttribute("hidden","")
 }
 
-const answerQuestion = function() {
-	console.log("works")
+const answerQuestion = function(event) {
+	if(questions[currentQestion].correct == event.srcElement.id){
+		console.log("correct")
+	}
+	else{ 
+		console.log("incorrect")
+	}
+	currentQestion++
+	nextQuestion()
 }
 
-var getButtons = document.getElementsByClassName("answer-button")
-getButtons[0].addEventListener("click", answerQuestion)
-getButtons[1].addEventListener("click", answerQuestion)
-getButtons[2].addEventListener("click", answerQuestion)
-getButtons[3].addEventListener("click", answerQuestion)
+answerButtons[0].addEventListener("click", answerQuestion)
+answerButtons[1].addEventListener("click", answerQuestion)
+answerButtons[2].addEventListener("click", answerQuestion)
+answerButtons[3].addEventListener("click", answerQuestion)
+startButton.addEventListener("click", startQuiz)
