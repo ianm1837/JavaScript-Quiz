@@ -45,8 +45,35 @@ var questions = [{
 		correct: "answer4"
 	}
 ]
+var i = 60
+var currentQestion = "0"
 
 //create timer using setInterval()
 
 
-//create function for reading and writing score
+
+const quizTimer = function(){
+	
+	document.getElementById("time-remaining").innerText = i
+	i--
+	
+}
+
+const startQuiz = function (){
+	setInterval(quizTimer, 1000)
+
+}
+
+const nextQuestion = function (){
+	
+}
+
+const answerQuestion = function() {
+	console.log("works")
+}
+
+var getButtons = document.getElementsByClassName("answer-button")
+getButtons[0].addEventListener("click", answerQuestion)
+getButtons[1].addEventListener("click", answerQuestion)
+getButtons[2].addEventListener("click", answerQuestion)
+getButtons[3].addEventListener("click", answerQuestion)
