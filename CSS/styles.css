@@ -53,6 +53,11 @@ header {
 	box-shadow: 0px 1px 17px -5px rgba(0,0,0,0.75);
 }
 
+#show-high-scores,
+#go-back{
+	cursor: pointer;
+}
+
 main {
 	display: flex;
 	flex-direction: column;

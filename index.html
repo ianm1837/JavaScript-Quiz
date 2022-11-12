@@ -11,9 +11,10 @@
 	<body>
 		<header>
 			<div id="high-scores">
-				<a href="#">View high scores</a>
+				<a id="show-high-scores">View high scores</a>
+				<a id="go-back" hidden>Go Back</a>
 			</div>
-			<div id="time-remaining-container">
+			<div id="time-remaining-container" hidden>
 				Time Remaining: <span id="time-remaining"></span>
 			</div>
 		</header>
@@ -24,7 +25,10 @@
 				<div id="save-score-container" hidden>
 					<p>Enter your initials below to save your score</p>
 					<input id="save-score-text" type="text">
-					<input id="save-score-button" type="button">
+					<input id="save-score-button" type="button" value="Save high score">
+				</div>
+				<div id="high-scores-list-area">
+					
 				</div>
 			</div>
 			<div id="answers">

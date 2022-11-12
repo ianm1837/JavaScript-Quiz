@@ -1,4 +1,3 @@
-//create array of objects with questions
 var questions = [{
 		number: 1,
 		content: "commonly used data types in JS do not include",
@@ -45,7 +44,12 @@ var questions = [{
 		correct: "answer4"
 	}
 ]
+var saveScoreContent = {}
+
+var localScores = []
+
 var i = 60
+var interval
 var currentQestion = "0"
 var failed = false
 var timer = document.getElementById("time-remaining")
@@ -54,12 +58,17 @@ var questionBox = document.getElementById("question")
 var startButton = document.getElementById("start-button")
 var saveScoreButton = document.getElementById("save-score-button")
 var saveScoreText = document.getElementById("save-score-text")
+var saveScoreContainer = document.getElementById("save-score-container")
+var showHighScoreButton = document.getElementById("show-high-scores")
+var highScoresListArea = document.getElementById("high-scores-list-area")
+var timeRemainingContainer = document.getElementById("time-remaining-container")
+var goBackButton = document.getElementById("go-back")
 var failureMessage = "Sorry, you ran out of time! Press the start button to try again."
 currentScore = 0
+timer.innerText = 60
 
 const quizTimer = function(){
-	
-	if(timer.innerText = 0){
+	if(timer.innerText <= 0){
 		failed = true
 		endQuiz()
 	}
@@ -70,6 +79,21 @@ const quizTimer = function(){
 }
 
 const showIntro = function (){
+	i = 60
+	currentQestion = "0"
+	if(!timeRemainingContainer.hasAttribute("hidden")){
+		timeRemainingContainer.setAttribute("hidden","")
+	}
+
+	if(!goBackButton.hasAttribute("hidden")){
+		goBackButton.setAttribute("hidden","")
+	}
+	if(!highScoresListArea.hasAttribute("hidden")){
+		highScoresListArea.setAttribute("hidden","")
+	}
+	if(showHighScoreButton.hasAttribute("hidden")){
+		showHighScoreButton.removeAttribute("hidden")
+	}
 	questionBox.innerText = "Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!"
 	if(startButton.hasAttribute("hidden")){
 		startButton.removeAttribute("hidden")
@@ -77,13 +101,21 @@ const showIntro = function (){
 }
 
 const startQuiz = function (){
-	setInterval(quizTimer, 1000)
+	interval = setInterval(quizTimer, 1000)
 
+	timeRemainingContainer.removeAttribute("hidden")
 	startButton.setAttribute("hidden", "")
 	answerButtons[0].removeAttribute("hidden")
 	answerButtons[1].removeAttribute("hidden")
 	answerButtons[2].removeAttribute("hidden")
 	answerButtons[3].removeAttribute("hidden")
+
+	if(!saveScoreContainer.hasAttribute("hidden")){
+		saveScoreContainer.setAttribute("hidden","")
+	}
+	if(!highScoresListArea.hasAttribute("hidden")){
+		highScoresListArea.setAttribute("hidden","")
+	}
 
 	nextQuestion()
 }
@@ -103,43 +135,99 @@ const nextQuestion = function (){
 }
 
 const endQuiz = function() {
+	timeRemainingContainer.setAttribute("hidden","")
+	clearInterval(interval)
 	i = 60
 	currentQestion = "0"
-	clearInterval(quizTimer)
 
 	answerButtons[0].setAttribute("hidden","")
 	answerButtons[1].setAttribute("hidden","")
 	answerButtons[2].setAttribute("hidden","")
 	answerButtons[3].setAttribute("hidden","")
 
-	if(failed = true){
+	if(failed == true){
 		failed = false
 		questionBox.innerText = failureMessage
 		startButton.removeAttribute("hidden")
 	}
 	else{
 		questionBox.innerText = "You scored: " + currentScore
+
+		saveScoreContainer.removeAttribute("hidden")
 	}
 }
 
 const answerQuestion = function(event) {
 	if(questions[currentQestion].correct == event.srcElement.id){
-		currentScore + 10
+		currentScore = currentScore + 10
 	}
 	else{ 
 		console.log("incorrect")
-		i - 10
+		i = i - 10
 	}
 	currentQestion++
 	nextQuestion()
 }
 
 const showHighScore = function() {
+	clearInterval(interval)
+	i = 60
+	currentQestion = "0"
 
+	if(!answerButtons[0].hasAttribute("hidden")){
+		answerButtons[0].setAttribute("hidden","")
+		answerButtons[1].setAttribute("hidden","")
+		answerButtons[2].setAttribute("hidden","")
+		answerButtons[3].setAttribute("hidden","")
+	}
+	if(!startButton.hasAttribute("hidden")){
+		startButton.setAttribute("hidden","")
+	}
+	if(!saveScoreContainer.hasAttribute("hidden")){
+		saveScoreContainer.setAttribute("hidden","")
+	}
+
+	timeRemainingContainer.setAttribute("hidden","")
+	showHighScoreButton.setAttribute("hidden","")
+	goBackButton.removeAttribute("hidden")
+	highScoresListArea.removeAttribute("hidden")
+	questionBox.innerText = "Current High Scores:"
+	
+	for(i = 0; i < localScores[0].length; i++){
+		highScoresListArea.innerHTML += localScores[0][i].playerInitials + ": " + localScores[0][i].playerScore + "<br>"
+		console.log("Loop: " + i)
+	}
+}
+
+//TODO: need to write a loop to parse through data read from local storage
+const getLocalScores = function(){
+	if(localStorage.getItem("highScores")){
+		var rawLocalScores = localStorage.getItem("highScores")
+		localScores.push(JSON.parse(rawLocalScores))
+		console.log(localScores)
+	}
 }
 
 const saveScore = function (){
+	if(saveScoreText.value == ''){
+		alert("you must enter your initials!")
+	}
+	else{
+		saveScoreContent.playerInitials = saveScoreText.value
+		saveScoreContent.playerScore = currentScore
 
+		localScores.push(saveScoreContent)
+		
+		var scoreAsString = JSON.stringify(localScores)
+
+		console.log(scoreAsString)
+
+		localStorage.setItem("highScores", scoreAsString)
+
+		localScores = []
+		getLocalScores()
+		showHighScore()
+	}
 }
 
 answerButtons[0].addEventListener("click", answerQuestion)
@@ -148,5 +236,8 @@ answerButtons[2].addEventListener("click", answerQuestion)
 answerButtons[3].addEventListener("click", answerQuestion)
 startButton.addEventListener("click", startQuiz)
 saveScoreButton.addEventListener("click", saveScore)
+showHighScoreButton.addEventListener("click", showHighScore)
+goBackButton.addEventListener("click", showIntro)
 
+getLocalScores()
 showIntro()
