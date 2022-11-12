@@ -47,19 +47,33 @@ var questions = [{
 ]
 var i = 60
 var currentQestion = "0"
+var failed = false
+var timer = document.getElementById("time-remaining")
 var answerButtons = document.getElementsByClassName("answer-button")
 var questionBox = document.getElementById("question")
 var startButton = document.getElementById("start-button")
-
-//create timer using setInterval()
-
-
+var saveScoreButton = document.getElementById("save-score-button")
+var saveScoreText = document.getElementById("save-score-text")
+var failureMessage = "Sorry, you ran out of time! Press the start button to try again."
+currentScore = 0
 
 const quizTimer = function(){
 	
-	document.getElementById("time-remaining").innerText = i
-	i--
-	
+	if(timer.innerText = 0){
+		failed = true
+		endQuiz()
+	}
+	else{
+		timer.innerText = i
+		i--
+	}
+}
+
+const showIntro = function (){
+	questionBox.innerText = "Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!"
+	if(startButton.hasAttribute("hidden")){
+		startButton.removeAttribute("hidden")
+	}
 }
 
 const startQuiz = function (){
@@ -89,22 +103,43 @@ const nextQuestion = function (){
 }
 
 const endQuiz = function() {
-	
+	i = 60
+	currentQestion = "0"
+	clearInterval(quizTimer)
+
 	answerButtons[0].setAttribute("hidden","")
 	answerButtons[1].setAttribute("hidden","")
 	answerButtons[2].setAttribute("hidden","")
 	answerButtons[3].setAttribute("hidden","")
+
+	if(failed = true){
+		failed = false
+		questionBox.innerText = failureMessage
+		startButton.removeAttribute("hidden")
+	}
+	else{
+		questionBox.innerText = "You scored: " + currentScore
+	}
 }
 
 const answerQuestion = function(event) {
 	if(questions[currentQestion].correct == event.srcElement.id){
-		console.log("correct")
+		currentScore + 10
 	}
 	else{ 
 		console.log("incorrect")
+		i - 10
 	}
 	currentQestion++
 	nextQuestion()
+}
+
+const showHighScore = function() {
+
+}
+
+const saveScore = function (){
+
 }
 
 answerButtons[0].addEventListener("click", answerQuestion)
@@ -112,3 +147,6 @@ answerButtons[1].addEventListener("click", answerQuestion)
 answerButtons[2].addEventListener("click", answerQuestion)
 answerButtons[3].addEventListener("click", answerQuestion)
 startButton.addEventListener("click", startQuiz)
+saveScoreButton.addEventListener("click", saveScore)
+
+showIntro()
