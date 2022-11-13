@@ -1,4 +1,5 @@
 # JavaScript Quiz
+![image](https://user-images.githubusercontent.com/65581204/201505680-4755f03d-b034-4248-8bd7-2b5321621f09.png)
 
 ## User Story
 
