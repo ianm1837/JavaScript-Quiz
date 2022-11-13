@@ -78,6 +78,23 @@ main {
 	margin: 3rem;
 }
 
+#save-score-container{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 1rem;
+
+}
+
+#save-score-text{
+	margin: 1rem;
+}
+
+#save-score-button{
+	padding: 1rem;
+}
+
 #start-button {
 	padding: 2rem;
 	margin: 2rem;
