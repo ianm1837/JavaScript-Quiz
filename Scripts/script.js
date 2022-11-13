@@ -45,13 +45,14 @@ var questions = [{
 	}
 ]
 var saveScoreContent = {}
-
 var localScores = []
-
 var i = 60
 var interval
 var currentQestion = "0"
 var failed = false
+var currentScore = 0
+var failureMessage = "Sorry, you ran out of time! Press the start button to try again."
+
 var timer = document.getElementById("time-remaining")
 var answerButtons = document.getElementsByClassName("answer-button")
 var questionBox = document.getElementById("question")
@@ -63,9 +64,6 @@ var showHighScoreButton = document.getElementById("show-high-scores")
 var highScoresListArea = document.getElementById("high-scores-list-area")
 var timeRemainingContainer = document.getElementById("time-remaining-container")
 var goBackButton = document.getElementById("go-back")
-var failureMessage = "Sorry, you ran out of time! Press the start button to try again."
-currentScore = 0
-timer.innerText = 60
 
 const quizTimer = function(){
 	if(timer.innerText <= 0){
@@ -81,10 +79,11 @@ const quizTimer = function(){
 const showIntro = function (){
 	i = 60
 	currentQestion = "0"
+	timer.innerText = 60
+
 	if(!timeRemainingContainer.hasAttribute("hidden")){
 		timeRemainingContainer.setAttribute("hidden","")
 	}
-
 	if(!goBackButton.hasAttribute("hidden")){
 		goBackButton.setAttribute("hidden","")
 	}
@@ -98,6 +97,7 @@ const showIntro = function (){
 	if(startButton.hasAttribute("hidden")){
 		startButton.removeAttribute("hidden")
 	}
+
 }
 
 const startQuiz = function (){
@@ -162,7 +162,6 @@ const answerQuestion = function(event) {
 		currentScore = currentScore + 10
 	}
 	else{ 
-		console.log("incorrect")
 		i = i - 10
 	}
 	currentQestion++
@@ -191,20 +190,19 @@ const showHighScore = function() {
 	showHighScoreButton.setAttribute("hidden","")
 	goBackButton.removeAttribute("hidden")
 	highScoresListArea.removeAttribute("hidden")
+	highScoresListArea.innerHTML = ""
 	questionBox.innerText = "Current High Scores:"
-	
-	for(i = 0; i < localScores[0].length; i++){
-		highScoresListArea.innerHTML += localScores[0][i].playerInitials + ": " + localScores[0][i].playerScore + "<br>"
-		console.log("Loop: " + i)
+
+	for(i = 0; i < localScores.length; i++){
+		highScoresListArea.innerHTML += localScores[i].playerInitials + ": " + localScores[i].playerScore + "<br>"
 	}
 }
 
-//TODO: need to write a loop to parse through data read from local storage
 const getLocalScores = function(){
 	if(localStorage.getItem("highScores")){
+		localScores = []
 		var rawLocalScores = localStorage.getItem("highScores")
-		localScores.push(JSON.parse(rawLocalScores))
-		console.log(localScores)
+		localScores = JSON.parse(rawLocalScores)
 	}
 }
 
@@ -215,16 +213,12 @@ const saveScore = function (){
 	else{
 		saveScoreContent.playerInitials = saveScoreText.value
 		saveScoreContent.playerScore = currentScore
-
 		localScores.push(saveScoreContent)
-		
 		var scoreAsString = JSON.stringify(localScores)
-
-		console.log(scoreAsString)
-
 		localStorage.setItem("highScores", scoreAsString)
 
 		localScores = []
+		saveScoreText.value = ""
 		getLocalScores()
 		showHighScore()
 	}
