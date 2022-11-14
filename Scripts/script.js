@@ -64,6 +64,7 @@ var showHighScoreButton = document.getElementById("show-high-scores")
 var highScoresListArea = document.getElementById("high-scores-list-area")
 var timeRemainingContainer = document.getElementById("time-remaining-container")
 var goBackButton = document.getElementById("go-back")
+var answerResult = document.getElementById("answer-result")
 
 const quizTimer = function(){
 	if(timer.innerText <= 0){
@@ -77,6 +78,7 @@ const quizTimer = function(){
 }
 
 const showIntro = function (){
+	answerResult.innerText = ""
 	i = 60
 	currentQestion = "0"
 	timer.innerText = 60
@@ -109,6 +111,10 @@ const startQuiz = function (){
 	answerButtons[1].removeAttribute("hidden")
 	answerButtons[2].removeAttribute("hidden")
 	answerButtons[3].removeAttribute("hidden")
+	
+	if(answerResult.hasAttribute("hidden")){
+		answerResult.removeAttribute("hidden")
+	}
 
 	if(!saveScoreContainer.hasAttribute("hidden")){
 		saveScoreContainer.setAttribute("hidden","")
@@ -144,6 +150,7 @@ const endQuiz = function() {
 	answerButtons[1].setAttribute("hidden","")
 	answerButtons[2].setAttribute("hidden","")
 	answerButtons[3].setAttribute("hidden","")
+	answerResult.setAttribute("hidden","")
 
 	if(failed == true){
 		failed = false
@@ -160,11 +167,14 @@ const endQuiz = function() {
 const answerQuestion = function(event) {
 	if(questions[currentQestion].correct == event.srcElement.id){
 		currentScore = currentScore + 10
+		answerResult.innerText = "Last answer: Correct!"
 	}
 	else{ 
 		i = i - 10
+		answerResult.innerText = "Last answer: Incorrect.."
 	}
 	currentQestion++
+
 	nextQuestion()
 }
 
@@ -178,6 +188,7 @@ const showHighScore = function() {
 		answerButtons[1].setAttribute("hidden","")
 		answerButtons[2].setAttribute("hidden","")
 		answerButtons[3].setAttribute("hidden","")
+		answerResult.setAttribute("hidden","")
 	}
 	if(!startButton.hasAttribute("hidden")){
 		startButton.setAttribute("hidden","")
