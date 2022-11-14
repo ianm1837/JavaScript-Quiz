@@ -103,6 +103,9 @@ const showIntro = function (){
 }
 
 const startQuiz = function (){
+	i = 60
+	currentQestion = "0"
+	timer.innerText = 60
 	interval = setInterval(quizTimer, 1000)
 
 	timeRemainingContainer.removeAttribute("hidden")
